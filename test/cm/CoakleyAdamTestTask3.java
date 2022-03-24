@@ -297,5 +297,103 @@ class CoakleyAdamTestTask3 {
 
     // tests for task three
 
+    // Visitor rate below 10.00
+    @Test
+    public void visitorUnder10() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.VISITOR, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(0), rate.calculate(new Period(14,17)));
+    }
+
+    // Visitor rate over 10.00
+    @Test
+    public void visitorOver10() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.VISITOR, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal("2.50"), rate.calculate(new Period(17,20)));
+    }
+
+    // Management below 4.00
+    @Test
+    public void managementUnderMinPayable() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.VISITOR, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(4), rate.calculate(new Period(10,11)));
+    }
+
+    // Management above 4.00
+    @Test
+    public void managementAboveMinPayable() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.VISITOR, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(15), rate.calculate(new Period(17,20)));
+    }
+
+    // Management parked during free parking hours
+    @Test
+    public void managementFreeParking() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.VISITOR, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(4), rate.calculate(new Period(0,4)));
+    }
+
+    // student amount below 5.50
+    @Test
+    public void studentUnderDiscount() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.STUDENT, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(4), rate.calculate(new Period(10,12)));
+    }
+
+    // student amount above 5.50
+    @Test
+    public void studentAboveDiscount() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal("8.50");
+        BigDecimal reducedRate = new BigDecimal(4);
+        Rate rate = new Rate(CarParkKind.STUDENT, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal("10.75"), rate.calculate(new Period(16,18)));
+    }
+
+    // staff amount above 16.00
+    @Test
+    public void staffOverMaxPayable() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.STAFF, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(16), rate.calculate(new Period(15,20)));
+    }
+
+    // staff amount under 16.00
+    @Test
+    public void staffUnderMaxPayable() {
+        ArrayList<Period> reducedPeriods = new ArrayList<>(Arrays.asList(new Period(10,17), new Period(20,24)));
+        ArrayList<Period> normalPeriods = new ArrayList<>(Arrays.asList(new Period(7,10), new Period(17,20)));
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(2);
+        Rate rate = new Rate(CarParkKind.STAFF, normalRate, reducedRate, reducedPeriods, normalPeriods);
+        Assertions.assertEquals(new BigDecimal(14), rate.calculate(new Period(10,17)));
+    }
 
 }
