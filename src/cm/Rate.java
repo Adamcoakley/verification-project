@@ -1,6 +1,7 @@
 package cm;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,11 +91,35 @@ public class Rate {
         }
         return isValid;
     }
+
     public BigDecimal calculate(Period periodStay) {
         int normalRateHours = periodStay.occurences(normal);
         int reducedRateHours = periodStay.occurences(reduced);
-        return (this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours))).add(
-                this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
-    }
 
+        BigDecimal cost = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).add(
+                this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
+
+        // instantiate instance of ICalculate
+        ICalculate calculateInstance;
+
+        switch (this.kind) {
+            case VISITOR -> {
+                calculateInstance = new VisitorRate();
+                cost = calculateInstance.calculate(cost).setScale(2, RoundingMode.HALF_EVEN);
+            }
+            case MANAGEMENT -> {
+                calculateInstance = new ManagementRate();
+                cost = calculateInstance.calculate(cost).setScale(2, RoundingMode.HALF_EVEN);
+            }
+            case STUDENT -> {
+                calculateInstance = new StudentRate();
+                cost = calculateInstance.calculate(cost).setScale(2, RoundingMode.HALF_EVEN);
+            }
+            default -> {
+                calculateInstance = new StaffRate();
+                cost = calculateInstance.calculate(cost).setScale(2, RoundingMode.HALF_EVEN);
+            }
+        }
+        return cost;
+    }
 }
